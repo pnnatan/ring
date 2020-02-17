@@ -1,7 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from mininet.net import Mininet
-from mininet.node import Controller, RemoteController, OVSKernelSwitch, OVSLegacyKernelSwitch, UserSwitch
+from mininet.node import Host, Controller
+from mininet.node import Controller, OVSKernelSwitch, OVSLegacyKernelSwitch, UserSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel
 from mininet.link import Link, TCLink
