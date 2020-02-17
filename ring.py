@@ -62,3 +62,19 @@ class Ring( Topo ):
         self.addLink( S8, HH2 )
     print("Hosts criados e conectados")
 topos = { 'Ring': ( lambda: Ring() ) }
+
+def simpleTest():
+    "Create and test a simple network"
+    topo = SingleSwitchTopo(n=4)
+    net = Mininet(topo)
+    net.start()
+    print "Dumping host connections"
+    dumpNodeConnections(net.hosts)
+    print "Testing network connectivity"
+    net.pingAll()
+    net.stop()
+
+if __name__ == '__main__':
+    # Tell mininet to print useful information
+    setLogLevel('info')
+    simpleTest()
