@@ -33,7 +33,8 @@ class Ring( Topo ):
         S6 = self.addSwitch( 'S6' )
         S7 = self.addSwitch( 'S7' )
         S8 = self.addSwitch( 'S8' )
-    print("Hosts criados")
+
+
 	#links
         self.addLink( S1, S2 )
         self.addLink( S2, S3 )
@@ -59,5 +60,5 @@ class Ring( Topo ):
         self.addLink( S7, HG2 )
         self.addLink( S8, HH1 )
         self.addLink( S8, HH2 )
-    print("Hosts conectados")
+    print("Hosts criados e conectados")
 topos = { 'Ring': ( lambda: Ring() ) }
