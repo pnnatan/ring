@@ -68,7 +68,7 @@ topos = { 'Ring': ( lambda: Ring() ) }
 
 def simpleTest():
     "Create and test a simple network"
-    topo = SingleSwitchTopo(n=4)
+    topo = Ring
     net = Mininet(topo)
     net.start()
     print "Dumping host connections"
