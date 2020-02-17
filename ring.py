@@ -34,7 +34,7 @@ class Ring( Topo ):
         S7 = self.addSwitch( 'S7' )
         S8 = self.addSwitch( 'S8' )
     
-    print("Hosts criados")
+    print("Hosts criados");
 
 	#links
         self.addLink( S1, S2 )
