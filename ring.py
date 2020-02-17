@@ -1,83 +1,68 @@
-from mininet.topo import Topo
+#!/usr/bin/python
+
 from mininet.net import Mininet
-from mininet.util import dumpNodeConnections
+from mininet.node import Controller, RemoteController, OVSKernelSwitch, OVSLegacyKernelSwitch, UserSwitch
+from mininet.cli import CLI
 from mininet.log import setLogLevel
+from mininet.link import Link, TCLink
 
-class Ring( Topo ):
-    "Ring topology example."
+def topology():
+
+    "Create a network."
+    net = Mininet( controller=RemoteController, link=TCLink, switch=OVSKernelSwitch )
+
+    print "*** Creating nodes"
+
+    h1 = net.addHost( 'h1', mac='00:00:00:00:00:01', ip='10.0.0.1/24' )
+    h2 = net.addHost( 'h2', mac='00:00:00:00:00:02', ip='10.0.10.2/24' )
+    h3 = net.addHost( 'h3', mac='00:00:00:00:00:03', ip='10.0.0.2/24' 
+    c7 = net.addController( 'c7', controller=RemoteController, ip='127.0.0.1', port=6633 )
+
+    print "*** Creating links"
+    #net.addLink(h1, h2)
+    Link(h1, h2)
     
-    def __init__( self ):
-	"Create custom topo."
-	#initialize
-        Topo.__init__( self )
+    #net.addLink(h2, h3)
+    Link(h2, h3)
 
-	#add
-        HA1 = self.addHost( 'HA1' )
-        HA2 = self.addHost( 'HA2' )
-        HB1 = self.addHost( 'HB1' )
-        HB2 = self.addHost( 'HB2' )
-        HC1 = self.addHost( 'HC1' )
-        HC2 = self.addHost( 'HC2' )
-        HD1 = self.addHost( 'HD1' )
-        HD2 = self.addHost( 'HD2' )
-        HE1 = self.addHost( 'HE1' )
-        HE2 = self.addHost( 'HE2' )
-        HF1 = self.addHost( 'HF1' )
-        HF2 = self.addHost( 'HF2' )
-        HG1 = self.addHost( 'HG1' )
-        HG2 = self.addHost( 'HG2' )
-        HH1 = self.addHost( 'HH1' )
-        HH2 = self.addHost( 'HH2' )
-        S1 = self.addSwitch( 'S1' )
-        S2 = self.addSwitch( 'S2' )
-        S3 = self.addSwitch( 'S3' )
-        S4 = self.addSwitch( 'S4' )
-        S5 = self.addSwitch( 'S5' )
-        S6 = self.addSwitch( 'S6' )
-        S7 = self.addSwitch( 'S7' )
-        S8 = self.addSwitch( 'S8' )
+    #net.addLink(s5, h2, 2, 0)
+    Link(h3, h1)
 
+    #net.addLink(h1, s5, 0, 1)
 
-	#links
-        self.addLink( S1, S2 )
-        self.addLink( S2, S3 )
-        self.addLink( S3, S4 )
-        self.addLink( S4, S5 )
-        self.addLink( S5, S6 )
-        self.addLink( S6, S7 )
-        self.addLink( S7, S8 )
-        self.addLink( S8, S1 )
-        self.addLink( S1, HA1 )
-        self.addLink( S1, HA2 )
-        self.addLink( S2, HB1 )
-        self.addLink( S2, HB2 )
-        self.addLink( S3, HC1 )
-        self.addLink( S3, HC2 )
-        self.addLink( S4, HD1 )
-        self.addLink( S4, HD2 )
-        self.addLink( S5, HE1 )
-        self.addLink( S5, HE2 )
-        self.addLink( S6, HF1 )
-        self.addLink( S6, HF2 )
-        self.addLink( S7, HG1 )
-        self.addLink( S7, HG2 )
-        self.addLink( S8, HH1 )
-        self.addLink( S8, HH2 )
-    print("Hosts criados e conectados")
-topos = { 'Ring': ( lambda: Ring() ) }
+    h1.cmd('ifconfig h1-eth1 10.0.10.1 netmask 255.255.255.0')
 
-def simpleTest():
-    "Create and test a simple network"
-    topo = Ring
-    net = Mininet(topo)
-    net.start()
-    print "Dumping host connections"
-    dumpNodeConnections(net.hosts)
-    print "Testing network connectivity"
-    net.pingAll()
+    h2.cmd('ifconfig h2-eth1 10.0.20.1 netmask 255.255.255.0')
+
+    h3.cmd('ifconfig h3-eth1 10.0.20.2 netmask 255.255.255.0')
+
+    h1.cmd("sudo echo 1 > /proc/sys/net/ipv4/ip_forward")
+
+    h2.cmd("sudo echo 1 > /proc/sys/net/ipv4/ip_forward")
+
+    h3.cmd("sudo echo 1 > /proc/sys/net/ipv4/ip_forward")
+
+    print "*** Starting network"
+
+    net.build()
+
+    c7.start()
+ 
+
+    print "*** Running CLI"
+
+    CLI( net )
+
+ 
+
+    print "*** Stopping network"
+
     net.stop()
 
+ 
+
 if __name__ == '__main__':
-    # Tell mininet to print useful information
-    setLogLevel('info')
-    simpleTest()
+
+    setLogLevel( 'info' )
+
+    topology()
